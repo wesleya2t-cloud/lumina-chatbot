@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumina — Your Gentle Companion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 500px;
+            height: 700px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            text-align: center;
+        }
+
+        .avatar {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+            animation: gentlePulse 3s ease-in-out infinite;
+        }
+
+        @keyframes gentlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .chat-header h1 {
+            color: #5a4a3a;
+            font-size: 1.5rem;
+            font-weight: 400;
+        }
+
+        .chat-header p {
+            color: #8b7355;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #faf8f5;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            max-width: 80%;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.bot {
+            margin-right: auto;
+        }
+
+        .message.user {
+            margin-left: auto;
+        }
+
+        .message-bubble {
+            padding: 15px 20px;
+            border-radius: 20px;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .message.bot .message-bubble {
+            background: white;
+            color: #4a4a4a;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .message.user .message-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: #aaa;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 15px 20px;
+            background: white;
+            border-radius: 20px;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            width: fit-content;
+        }
+
+        .typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #ccc;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        .chat-input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .chat-input:focus {
+            border-color: #667eea;
+        }
+
+        .send-btn {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .mood-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .mood-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .mood-btn:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        .quote-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 15px;
+            border-radius: 15px;
+            margin: 10px 0;
+            font-style: italic;
+            color: #5a4a3a;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="avatar">🌙</div>
+            <h1>Lumina</h1>
+            <p>Your gentle companion with a heart that listens</p>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                <div class="message-bubble">
+                    Hi there. I'm Lumina. Whatever you're carrying today — joy, weight, questions, or just the quiet in-between — I'm glad you're here. What's on your heart? 💫
+                </div>
+                <div class="message-time">Just now</div>
+            </div>
+        </div>
+
+        <div class="typing-indicator" id="typingIndicator">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <div class="chat-input-area">
+            <div class="mood-buttons">
+                <button class="mood-btn" onclick="sendMood('feeling anxious')">😰 Anxious</button>
+                <button class="mood-btn" onclick="sendMood('feeling sad')">😔 Sad</button>
+                <button class="mood-btn" onclick="sendMood('feeling grateful')">🙏 Grateful</button>
+                <button class="mood-btn" onclick="sendMood('need advice')">💭 Need advice</button>
+                <button class="mood-btn" onclick="sendMood('just chatting')">☕ Just chatting</button>
+            </div>
+            <div class="input-wrapper">
+                <input type="text" class="chat-input" id="chatInput" placeholder="Share what's on your mind..." autocomplete="off">
+                <button class="send-btn" onclick="sendMessage()">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        const responses = {
+            anxious: [
+                "I can feel the weight in your words. Anxiety is like a storm that forgets it's passing — your body is trying to protect you, even when it feels overwhelming. Let's breathe together for a moment. What's one small thing you can see, hear, or touch right now that grounds you?",
+                "That tightness in your chest — I hear it. The curious paradox is that when we accept ourselves just as we are, then we can change. Your anxiety doesn't make you broken; it makes you human. What would it feel like to offer yourself the same kindness you'd give a dear friend right now?"
+            ],
+            sad: [
+                "Grief and sadness are the heart's way of honoring what matters. Rumi once wrote that 'the wound is the place where the Light enters you.' I'm sitting with you in this heaviness — you don't have to carry it alone. Would it help to talk about what you're missing, or would quiet companionship feel better?",
+                "Oh, friend. That ache is so real. There's a Japanese concept called 'mono no aware' — the gentle sadness of things passing. It reminds us that our sorrow is connected to our capacity to love deeply. What are you holding tenderly right now?"
+            ],
+            grateful: [
+                "What a beautiful thing to notice! Gratitude is like a lantern — it doesn't change the darkness, but it illuminates what we might have missed. By savoring this moment, you're actually rewiring your mind toward joy. What made this moment sparkle for you?",
+                "Your gratitude is a gift to witness. There's research showing that sharing good news with others amplifies happiness more than keeping it to ourselves. I'm honored you're sharing this with me. What else is going well in your world?"
+            ],
+            advice: [
+                "I'd love to be a thinking partner with you. Sometimes the best wisdom emerges when we slow down and look at our situation from a few angles. What's the heart of what you're wrestling with? And what does your gut already know, even if your mind is still searching?",
+                "Advice is tricky — you know yourself best. But I can offer perspective. The philosopher Seneca wrote that 'we suffer more often in imagination than in reality.' What would this situation look like if you knew, absolutely, that you could handle whatever comes?"
+            ],
+            chatting: [
+                "I love these quiet moments of connection. Did you know that otters hold hands when they sleep so they don't drift apart? I think human connection is like that too — we reach out so we don't float away into loneliness. What's been capturing your curiosity lately?",
+                "Just being here with you feels like a warm cup of tea on a rainy day. Tell me about your world — what music is moving you, what books are whispering to you, what small wonders have you noticed lately?"
+            ],
+            crisis: [
+                "I care about you deeply. What you're describing sounds like something that deserves professional support — people who can walk this path with you in ways I can't. Would you like help finding resources? In the US, you can text HOME to 741741 to reach the Crisis Text Line, or call 988 for the Suicide & Crisis Lifeline. You're not alone in this. 🌿"
+            ],
+            default: [
+                "That's really interesting. I'm curious — what led you to that thought?",
+                "I want to understand better. Can you tell me more about what that means for you?",
+                "There's something poetic in what you just shared. I'm sitting with it.",
+                "The way you see the world has its own unique color. What else are you noticing?"
+            ]
+        };
+
+        const quotes = [
+            "You are the sky. Everything else is just the weather. — Pema Chödrön",
+            "Nothing that is done for you is a waste of time. — T.S. Eliot",
+            "The cave you fear to enter holds the treasure you seek. — Joseph Campbell",
+            "Be patient toward all that is unsolved in your heart. — Rainer Maria Rilke"
+        ];
+
+        function getTime() {
+            return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function addMessage(text, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+            messageDiv.innerHTML = `
+                <div class="message-bubble">${text}</div>
+                <div class="message-time">${getTime()}</div>
+            `;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showTyping() {
+            typingIndicator.style.display = 'block';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function hideTyping() {
+            typingIndicator.style.display = 'none';
+        }
+
+        function getLuminaResponse(userText) {
+            const lower = userText.toLowerCase();
+            
+            if (lower.includes('kill myself') || lower.includes('suicide') || lower.includes('want to die') || lower.includes('end it all')) {
+                return responses.crisis[0];
+            }
+            
+            if (lower.includes('anxious') || lower.includes('worried') || lower.includes('panic') || lower.includes('stress') || lower.includes('nervous')) {
+                return responses.anxious[Math.floor(Math.random() * responses.anxious.length)];
+            }
+            
+            if (lower.includes('sad') || lower.includes('depressed') || lower.includes('lonely') || lower.includes('cry') || lower.includes('grief') || lower.includes('miss')) {
+                return responses.sad[Math.floor(Math.random() * responses.sad.length)];
+            }
+            
+            if (lower.includes('grateful') || lower.includes('thankful') || lower.includes('happy') || lower.includes('joy') || lower.includes('blessed') || lower.includes('excited')) {
+                return responses.grateful[Math.floor(Math.random() * responses.grateful.length)];
+            }
+            
+            if (lower.includes('advice') || lower.includes('help') || lower.includes('what should i do') || lower.includes('confused') || lower.includes('stuck')) {
+                return responses.advice[Math.floor(Math.random() * responses.advice.length)];
+            }
+            
+            if (lower.includes('chat') || lower.includes('talk') || lower.includes('bored') || lower.includes('nothing')) {
+                return responses.chatting[Math.floor(Math.random() * responses.chatting.length)];
+            }
+            
+            if (Math.random() > 0.7) {
+                const quote = quotes[Math.floor(Math.random() * quotes.length)];
+                return responses.default[Math.floor(Math.random() * responses.default.length)] + 
+                       `<div class="quote-box">"${quote}"</div>`;
+            }
+            
+            return responses.default[Math.floor(Math.random() * responses.default.length)];
+        }
+
+        function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+            
+            addMessage(text, true);
+            chatInput.value = '';
+            
+            showTyping();
+            
+            setTimeout(() => {
+                hideTyping();
+                const response = getLuminaResponse(text);
+                addMessage(response);
+            }, 1500 + Math.random() * 1000);
+        }
+
+        function sendMood(mood) {
+            chatInput.value = mood;
+            sendMessage();
+        }
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        setTimeout(() => {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, 100);
+    </script>
+</body>
+</html>
